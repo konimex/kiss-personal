@@ -1,0 +1,18 @@
+#!/bin/sh -e
+
+./configure \
+    --prefix=/usr \
+    --sbindir=/usr/bin \
+    --with-user=chrony \
+    --without-nss
+
+make
+make DESTDIR="$1" install
+
+install -Dm644 examples/chrony.conf.example3 "$1/etc/chrony.conf"
+sed -e 's,! pool pool.ntp.org iburst,pool pool.ntp.org iburst,' -i "$1/etc/chrony.conf"
+sed -e 's,! rtcfile /var/lib/chrony/rtc,rtcfile /var/lib/chrony/rtc,' -i "$1/etc/chrony.conf"
+sed -e 's, ! makestep 1.0 3,makestep 1.0 3,' -i "$1/etc/chrony.conf"
+
+install -Dm755 chronyd.run "$1/etc/sv/chronyd/run"
+ln -s /run/runit/supervise.chronyd "$1/etc/sv/chronyd/supervise"
