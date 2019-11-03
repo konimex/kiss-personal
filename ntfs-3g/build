@@ -1,0 +1,20 @@
+#!/bin/sh -e
+
+sed 's|$(DESTDIR)/sbin|$(DESTDIR)/usr/bin|' -i ntfsprogs/Makefile.in
+sed 's|$(DESTDIR)/sbin|$(DESTDIR)/usr/bin|' -i src/Makefile.in
+
+./configure \
+    --prefix=/usr \
+    --sbindir=/usr/bin \
+    --mandir=/usr/share/man \
+    --disable-ldconfig \
+    --disable-static \
+    --enable-xattr-mappings \
+    --enable-posix-acls \
+    --with-fuse=external
+
+make
+make DESTDIR="$1" rootbindir=/usr/bin rootsbindir=/usr/bin \
+    rootlibdir=/usr/lib install
+
+ln -s ntfs-3g "$1/usr/bin/mount.ntfs"
