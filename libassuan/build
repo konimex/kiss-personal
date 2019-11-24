@@ -1,0 +1,8 @@
+#!/bin/sh -e
+
+./configure \
+    --prefix=/usr \
+    --host=x86_64-pc-linux-musl
+
+make
+make DESTDIR="$1" install
