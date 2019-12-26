@@ -1,12 +1,14 @@
 #!/bin/sh -e
 
-#sed -i '/install.*STALIBNAME/d' libcap/Makefile
 sed -i 's/CFLAGS :=/CFLAGS +=/g' Make.Rules
 sed -i 's/LDFLAGS :=/LDFLAGS +=/g' Make.Rules
 sed -i '/BUILD_CFLAGS/s/$(CFLAGS)//' Make.Rules
+
+# Disable tests
+sed -e '/test:/,/.sh/d' -e '/tests/d' -i Makefile
 
 make CC="${CC:-cc}" BUILD_CC=cc
 make DESTDIR="$1" SBINDIR=/usr/bin LIBDIR=/usr/lib \
      RAISE_SETFCAP=no PKGCONFIGDIR=/usr/lib/pkgconfig install
 
-chmod 755 "$1/usr/lib/libcap.so.2.27"
+chmod 755 "$1/usr/lib/libcap.so.2.29"
