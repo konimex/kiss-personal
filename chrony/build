@@ -7,7 +7,7 @@
     --without-nss
 
 make
-make DESTDIR="$1" install
+gmake DESTDIR="$1" install
 
 install -Dm644 examples/chrony.conf.example3 "$1/etc/chrony.conf"
 sed -e 's,! pool pool.ntp.org iburst,pool pool.ntp.org iburst,' -i "$1/etc/chrony.conf"
