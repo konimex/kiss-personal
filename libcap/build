@@ -1,14 +1,15 @@
 #!/bin/sh -e
 
-sed -i 's/CFLAGS :=/CFLAGS +=/g' Make.Rules
-sed -i 's/LDFLAGS :=/LDFLAGS +=/g' Make.Rules
-sed -i '/BUILD_CFLAGS/s/$(CFLAGS)//' Make.Rules
+mk() {
+    gmake \
+        GOLANG=no \
+        PREFIX=/usr \
+        SBINDIR=/usr/bin \
+        LIBDIR=/usr/lib \
+        PKGCONFIGDIR=/usr/lib/pkgconfig \
+        RAISE_SETFCAP=no \
+        "$@"
+}
 
-# Disable tests
-sed -e '/test:/,/.sh/d' -e '/tests/d' -i Makefile
-
-make CC="${CC:-cc}" BUILD_CC=cc
-make DESTDIR="$1" SBINDIR=/usr/bin LIBDIR=/usr/lib \
-     RAISE_SETFCAP=no PKGCONFIGDIR=/usr/lib/pkgconfig install
-
-chmod 755 "$1/usr/lib/libcap.so.2.29"
+mk
+mk DESTDIR="$1" install
