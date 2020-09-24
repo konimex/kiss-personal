@@ -1,2 +1,3 @@
+#!/bin/sh -e
 addgroup -S chrony
 adduser -SDHG chrony chrony
